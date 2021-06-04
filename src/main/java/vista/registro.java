@@ -5,6 +5,11 @@
  */
 package vista;
 
+import javax.swing.JOptionPane;
+import modelo.Hash;
+import modelo.SqlUsuarios;
+import modelo.usuarios;
+
 /**
  *
  * @author ferna
@@ -68,6 +73,11 @@ public class registro extends javax.swing.JFrame {
 
         btnRegistrar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnRegistrar.setText("Registrar");
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -132,6 +142,37 @@ public class registro extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        
+        SqlUsuarios modSql = new SqlUsuarios();
+        usuarios mod = new usuarios();
+        
+        String pass = new String(txtPassword.getPassword());
+        String passCon = new String(txtConfirmaPassword.getPassword());
+        
+        if(pass.equals(passCon))
+        {
+            String nuevoPass = Hash.sha1(pass);
+            
+            mod.setUsuario(txtUsuario.getText());
+            mod.setPassword(nuevoPass);
+            mod.setNombre(txtNombre.getText());
+            mod.setCorreo(txtCorreo.getText());
+            mod.setId_tipo(1);
+            
+            if(modSql.registrar(mod))
+            {
+                JOptionPane.showMessageDialog(null, "Registro guardado");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al guardar");
+            }
+            
+        } else {
+            JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden");
+        }
+        
+    }//GEN-LAST:event_btnRegistrarActionPerformed
 
     /**
      * @param args the command line arguments
